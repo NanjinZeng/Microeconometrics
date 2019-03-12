@@ -172,7 +172,7 @@ i.e.
 \begin_inset Formula $H$
 \end_inset
 
-can generate on a data set of 
+ can generate on a data set of 
 \begin_inset Formula $N$
 \end_inset
 
@@ -196,13 +196,13 @@ The Vapnik-Chervonenkis (VC) dimension of
 \end_layout
 
 \begin_layout Standard
-These concept sounds a little bit incomprehensible to us undergraduate students.
+These concepts sound a little bit incomprehensible to us undergraduate students.
  In addition, the professor does not mention too much in this part but concentra
 te on the generally understanding the meaning to balance the bias and variance
  of the model.
  So, for this blog, I want to introduce these two concepts precisely and
  intuitively.
- (For mathematical proof, you can read the article which I mention below.)
+ (For mathematical proof, you can read the paper which I mention below.)
 \end_layout
 
 \begin_layout Section
@@ -210,7 +210,7 @@ Back to the origin
 \end_layout
 
 \begin_layout Standard
-I find the literature of Vapnik and Chervonenkis, on the uniform convergence
+I find a literature of Vapnik and Chervonenkis, on the uniform convergence
  of relative frequencies of events to their probabilities (translated ver.
  in English), theory of probability and applications, volume 12, 1971.
  I consider that it is the origin of these two concepts.
@@ -549,7 +549,7 @@ Obviously,
 \begin_inset Formula $n$
 \end_inset
 
- could violate the equity.
+ could violate the equation.
 \end_layout
 
 \begin_layout Standard
@@ -694,11 +694,21 @@ I find this article when I want to learn more about George E.
  field.
  And he gave a early concept of data analysis and data getting in the process
  of scientific investigation.
- You can read it as a pastime because most of the article is vivid narration
+ You can read it as a pastime because most of this article is vivid narration
  and a little bit math.
- I think it's highly related with much concepts we learnt at the course
+ I think it's highly related with some concepts we learnt at the course
  mathematical statistics.
  And you can know how a early statistician work at that time.
+\end_layout
+
+\begin_layout Section
+link
+\end_layout
+
+\begin_layout Standard
+This article has been published on my own blog.
+ Click to visit.
+ https://nanjinzeng.github.io/2019/03/11/growth-function-and-VC-dimension/
 \end_layout
 
 \end_body
