@@ -1,0 +1,631 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Bootstrap Method Explained
+\end_layout
+
+\begin_layout Author
+Nanjin Zeng(id:15220162202482) WISE IUEC 2016
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+In the lecture, we have learnt an amazing method, bootstrap, which processes
+ sounds very easy
+\end_layout
+
+\begin_layout Quote
+The bootstrap approach generates new samples by repeatedly drawing observations
+ from the observed sample with replacement, which could be used to quantify
+ the uncertainty accociate with a given estimator or statistical menthod.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+I wonder how this method works well and what the advantage of this method
+ is.
+ In the following part, I would introduce the idea behind this method first.
+ Then I will show how to run this method using Stata15.
+\end_layout
+
+\begin_layout Section
+Back To The Origin
+\end_layout
+
+\begin_layout Subsection
+Jackknife method
+\end_layout
+
+\begin_layout Standard
+After reading the paper of Efron(1979), the first paper carry out this idea,
+ I know more about this method.
+ Before Efron raised this method, the statisticians used another diffenent
+ resampling method, Jackknife method by Quenouille(1956).
+ The process of this method is also insteresting.
+\end_layout
+
+\begin_layout Quotation
+Let 
+\begin_inset Formula $T_{n}=T(X_{1},\cdots,X_{n})$
+\end_inset
+
+ be a statistic and 
+\begin_inset Formula $T_{(-i)}$
+\end_inset
+
+ denote the statistice with the 
+\begin_inset Formula $i^{th}$
+\end_inset
+
+ observation removed.
+ Let 
+\begin_inset Formula $\overline{T_{n}}=\frac{\sum_{i=1}^{n}T_{(-i)}}{n}$
+\end_inset
+
+.
+ The jackknife estimate of 
+\begin_inset Formula $Var(T_{n})$
+\end_inset
+
+is
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-3"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+\begin_inset Formula 
+\[
+v_{jack}=\frac{n-1}{n}\sum_{i=1}^{n}(T_{(-i)}-\overline{T_{n}})^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+It means that we take one of the observations for sample each time.
+ Then we get 
+\begin_inset Formula $n$
+\end_inset
+
+ jackknife samples.
+ Then we use these samples to recompute the estimator.
+\end_layout
+
+\begin_layout Subsection
+Bootstrap method
+\end_layout
+
+\begin_layout Standard
+And for the bootstrap method, the process is stated in the lecture.
+ After reading the paper, being precisely, it could be divided into two
+ process.
+\end_layout
+
+\begin_layout Enumerate
+Construct the sample probability distribution 
+\begin_inset Formula $\hat{F}$
+\end_inset
+
+, putting mass 
+\begin_inset Formula $1/n$
+\end_inset
+
+ at each point 
+\begin_inset Formula $x_{1},x_{2},\cdots,x_{n}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+With 
+\begin_inset Formula $\hat{F}$
+\end_inset
+
+fixed, draw a random sample of size 
+\begin_inset Formula $n$
+\end_inset
+
+ from 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\hat{F}$
+\end_inset
+
+.
+ Approximatemate the sampling distribution of estimator(random variable)
+ by the bootstrap distribution.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-4"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Further more, for step 2, three methods are given by the author.
+ To some estimator like sample mean, we can write down a simple formula
+ for variance (method 1).
+ We can also use Tarlor series expansion (method 3).
+ But the common way we use these days is Monte Carlo approximation (method
+ 2).
+ Repeated realizations of 
+\begin_inset Formula $X^{*}$
+\end_inset
+
+ are generated by taking random samples of size 
+\begin_inset Formula $n$
+\end_inset
+
+ from F, which is a way as simulation.
+\end_layout
+
+\begin_layout Standard
+By these process, we use two approximations.
+ In step 1, we use an construsted empricial distribution 
+\begin_inset Formula $\hat{F}$
+\end_inset
+
+ to approximate the true 
+\begin_inset Formula $F$
+\end_inset
+
+.
+ In step 2, we use the variance of the estimator in these bootstrap samples
+ to estimates the variance.
+ The uncertainty of this processmainly comes form first approximation, because
+ we can make 
+\begin_inset Formula $B\rightarrow\infty$
+\end_inset
+
+.
+ It also state that though it could work well with uncertain distribution
+ and small sample, it could not save you from a totally 
+\begin_inset Quotes eld
+\end_inset
+
+bad" samples, like one just have two observations.
+ In this case, you could not expect that your constructed EDF could be compatibl
+e with the true CDF.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-3"
+literal "false"
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+v_{boot}=\frac{1}{B}(\sum_{r=1}^{B}T_{n,b}^{*}-\frac{1}{B}\sum_{r=1}^{B}T_{n,r}^{*})^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Comparing with Jackknife method, it has some improvements.
+ First, it is more general, for example, the jackknife estimate do not work
+ well with the stand error of sample quantiles
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+literal "false"
+
+\end_inset
+
+.
+ Second, at Quenouille's time, they do not have computer to draw random
+ sample and compute the estimator each by each for so many bootstrap samples.
+ But we could run bootstrap using statistic programmes.
+ We could enlarge the resampling by taking more than 1000 bootstrap samples.
+ That means it is out performed by the bootstrap when 
+\begin_inset Formula $B\rightarrow\infty$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+An Example Using Stata 15.0
+\end_layout
+
+\begin_layout Standard
+As I mentioned above, thanks to the development of computer science.
+ We could use bootstrap method costlessly.
+ In this part, I will show how to run bootstrap method using a group of
+ simulated data.
+\end_layout
+
+\begin_layout Standard
+Let's use the same example as the lectnotes in OLS.
+ First we genenrate a data with only 20 observations.
+\end_layout
+
+\begin_layout Quote
+set obs 20
+\end_layout
+
+\begin_layout Quote
+gen x1 = uniform()
+\end_layout
+
+\begin_layout Quote
+gen x2 = 0.5*x1 + 0.5*rnormal(0,1)
+\end_layout
+
+\begin_layout Quote
+gen e = rnormal(0,1)
+\end_layout
+
+\begin_layout Quote
+gen y = 1 - 2.5*x1 + 5*x2 + e
+\end_layout
+
+\begin_layout Standard
+To use bootstrap, we need the command bootstrap, the syntax is
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-6"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quotation
+bootstrap exp list [, options] : command
+\end_layout
+
+\begin_layout Standard
+To simple use, we could determin the number of samples with reps(#), which
+ default is 50, but to rules of thumb it should be more than 1000.
+ And we could save the results by attaching _b,saving(bstat).
+ More options are available looking up the help file.
+ command is any command follows standard Stata syntax.
+ In this case we use
+\end_layout
+
+\begin_layout Quote
+bootstrap _b, saving(bstat) reps(1000) bca:reg y x1 x2,r
+\end_layout
+
+\begin_layout Standard
+the result using bootstrap
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Bootstrap.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The bootstrap standard error is stated at the second row.
+\end_layout
+
+\begin_layout Standard
+Let compare it to the robust standard error if we run the regression directly.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename OLS.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The error only slightly differs to each other! It reveals that if 
+\begin_inset Formula $B\rightarrow\infty$
+\end_inset
+
+, Monte Carlo approximation (method 2) could behave nearly as well as using
+ formula for variance in specific distribution (method 1).
+\end_layout
+
+\begin_layout Section
+Why we choose to use Bootstrap Method?
+\end_layout
+
+\begin_layout Standard
+From the example, we can clearly know the advantage using bootstrap method.
+\end_layout
+
+\begin_layout Enumerate
+You do not need to worry about how to derive the varicance formula of your
+ estimator.
+ All you have to do is to simulate it using you computer.
+ It could be very useful when you have an unusual or complex estimator,
+ like what we talked in the lecture, the 
+\begin_inset Formula $\hat{\alpha}$
+\end_inset
+
+ for the total risk in two fianancial assets.
+\end_layout
+
+\begin_layout Enumerate
+As a nonparametric method, your could use it regardless much prior assumptions.
+ It only needs some simple assumpions like i.i.d samples.
+ As the example above, though the 
+\begin_inset Formula $se()$
+\end_inset
+
+ is derived from Heteroskedasticity Robust Standard Error formula, it is
+ based on the three OLS assumptions.
+ If some of them are violated, the estimation is unreliable.
+ However, bootstrap 
+\begin_inset Formula $se()$
+\end_inset
+
+ is still reliable in this case.
+ (But you should not continue use OLS coefficient estimator without these
+ assumption.XD)
+\end_layout
+
+\begin_layout Enumerate
+Bootstrap method have much more applications than finding variances for
+ estimator.
+ For example, it can reveal the bias of estimator in that case.
+ It could also be used in hypothesuis and specification test, empiricial
+ likelihood in overidentified mofel, ...
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Jiaming Mao.
+ "Regression"[Z].2019-03-30.https://github.com/jiamingmao/data-analysis/blob/master
+/Lectures/Regression.pdf
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+
+\end_inset
+
+AC Cameron, PK Trivedi.
+ "Microeconometrics"[M].Cambridge Books.2008.107-118
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-4"
+
+\end_inset
+
+Efron, B.
+ "Bootstrap Methods: Another Look at the Jackknife."[J].The Annals of Statistics
+ 7, no.
+ 1 (1979): 1-26
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+Larry Wasserman.
+ "All of Statistics: A Concise Course in Statistical Inference"[M].Springer
+ Science & Business Media.2013.357-383
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-6"
+
+\end_inset
+
+Stata Statistics/Data Analysis.
+ "bootstrap_bootstrap sampling and estimation"[Z].
+ 2019-03-30.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-5"
+
+\end_inset
+
+Efron, B., and R.
+ Tibshirani.
+ "Bootstrap Methods for Standard Errors, Confidence Intervals, and Other
+ Measures of Statistical Accuracy."[J].Statistical Science 1, no.
+ 1 (1986): 54-75.
+\end_layout
+
+\begin_layout Section
+Weekly Recommended Reading by myself
+\end_layout
+
+\begin_layout Quotation
+Contributors receive social benefits from their contributions, and the shrinking
+ group size reduces these social benefits.
+\end_layout
+
+\begin_layout Standard
+JOURNAL ARTICLE
+\end_layout
+
+\begin_layout Standard
+Group Size and Incentives to Contribute: A Natural Experiment at Chinese
+ Wikipedia
+\end_layout
+
+\begin_layout Standard
+Xiaoquan (Michael) Zhang and Feng Zhu
+\end_layout
+
+\begin_layout Standard
+The American Economic Review Vol.
+ 101, No.
+ 4 (JUNE 2011), pp.
+ 1601-1615 (15 pages) Published by: American Economic Association
+\end_layout
+
+\begin_layout Standard
+DOI: 10.1257/aer.101.4.1601
+\end_layout
+
+\begin_layout Standard
+As our previous learning in priciple class, the content in Wiki is a kind
+ of public goods.
+ It means that the contributors could not charge fee for their contribution.
+ That comes the free rider problem.
+ Moreover, as the size of users grows, the users would be more unwilling
+ to contribute because he could expect others to do it for him.
+ But the author evaluates the effect of the block by mainland and find that
+ the result is in opposite.
+ That is a very unexpected idea.
+ Furthermore, the methodology they used is not so complex.
+ You could spend some fragmented time to read it even the midterm is coming.
+\end_layout
+
+\begin_layout Section
+link
+\end_layout
+
+\begin_layout Standard
+This article has been published on my own blog.
+ Click to visit.
+ https://nanjinzeng.github.io/
+\end_layout
+
+\end_body
+\end_document
