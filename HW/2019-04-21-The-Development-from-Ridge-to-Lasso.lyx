@@ -1,0 +1,696 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+The Development from Ridge to Lasso
+\end_layout
+
+\begin_layout Author
+Nanjin Zeng(id:15220162202482) WISE IUEC 2016
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+In the lecture, we have learnt the new idea of an amazing method, Regularization.
+\end_layout
+
+\begin_layout Standard
+In the Econometric course which I attended in last semester, I know about
+ the OLS method.
+ It is an Best Linear Unbiased Estimator.
+ It seems nothing better than OLS because the economists concerns about
+ causal relationship without bias.
+ But for this case, I know the new idea that we could sacrifice the unbias
+ and achieve low variance, which could improve the accuracy by reducing
+ the out-of-sample error significantly.
+ That is why I want to learn more about how this idea formed and been improved.
+\end_layout
+
+\begin_layout Standard
+In this blog, I would carry out a brief look about how the regularization
+ developed from Ridge to Lasso.
+ A method the Nonnegative Garrote (Breiman, 1993) would be talked because
+ it is a method invented before the Lasso, which offsets some drawbacks
+ in the Ridge and has some similarity with Lasso.
+ It is indispensable as the motivation for the lasso.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ I would introduce them one by one in a contribution view, what improvement
+ they had made comparing to the previous one.
+\end_layout
+
+\begin_layout Section
+The Development path
+\end_layout
+
+\begin_layout Subsection
+the Ridge
+\end_layout
+
+\begin_layout Standard
+The Ridge regression is a biased estimation invented by Hoerl and Kennard
+ (1970).
+ Its feature has been showed in the lecture.
+ But in the papar, the authors give us a different view of the Ridge using
+ the matrix, which could help us understanding the mechanism of Ridge.
+\end_layout
+
+\begin_layout Quote
+In the standard model of mutiple linear regression, the parameter is estimated
+ by 
+\begin_inset Formula $\hat{\beta}_{OLS}=(X'X)^{-1}X'Y$
+\end_inset
+
+.
+ This estimation procedure is a good one if 
+\begin_inset Formula $X'X$
+\end_inset
+
+, when in the form of a correlation matrix, is nearly a unit matrix.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-15"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To be brief, it means that the condition for OLS to work well is that 
+\begin_inset Formula $X'X$
+\end_inset
+
+ does not equal to 0.
+ It requires the 
+\begin_inset Formula $X$
+\end_inset
+
+ is a non-singular matrix.
+ But there is some case in which 
+\begin_inset Formula $X'X$
+\end_inset
+
+ is close to zero, in which case the variance is huge for 
+\begin_inset Formula $var(\hat{\beta}_{OLS})=\sigma^{2}(X'X)^{-1}$
+\end_inset
+
+, when
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-6"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+There is too many predictors.
+ (p>N)
+\end_layout
+
+\begin_layout Enumerate
+There are strong correration between some predictiors.
+ (Multicollinearity)
+\end_layout
+
+\begin_layout Standard
+These two problems rarely occurs in our previous study.
+ When we begin to learn ecometrics, we choose a small number of predictors
+ stepwisely using the old criteria if the coefficant is statistically significan
+t.
+ But for big data science, we face a large number of predictors each have
+ different levels of effect on the dependent variable.
+ Doing stepwise subset selection is time-costly and has some other problems.
+\end_layout
+
+\begin_layout Standard
+One of the solution is doing the Ridge regression.
+ In this way, the parameter is estimated by
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-8"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+\begin_inset Formula $\hat{\beta}_{R}=(X'X+kI)^{-1}X'Y=WX'Y$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It could ease the problem 2 by create an invertible matrix.
+ Furthermore, it could avoid probably overfit by reducing the variance of
+ estimators.
+\end_layout
+
+\begin_layout Subsection
+the Nonnegative Garrote
+\end_layout
+
+\begin_layout Standard
+But the Ridge still have some drawbacks,
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-3"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The Ridge gives a regression no simpler than the OLS.
+\end_layout
+
+\begin_layout Enumerate
+The Ridge is not scale invariant.
+ If the scales used to express the individual predictor varibles are changed,
+ then the ridge coefficients do not change inversely proportional to the
+ changes in the variable scales.
+\end_layout
+
+\begin_layout Standard
+For drawback 1, it needs something like subset selection which could determine
+ a smaller subset that exhibits the strongest effects.
+ For drawback 2, the new method should be scale invariant.
+ That comes the Nonnegative Garrote.
+\end_layout
+
+\begin_layout Standard
+The procedure of the Nonnegative Garrote is
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-3"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+Let 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\{\hat{\beta}_{OLS}\}$
+\end_inset
+
+be the original OLS estimates
+\end_layout
+
+\begin_layout Quote
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+Take 
+\begin_inset Formula $\{c_{k}\}$
+\end_inset
+
+to minimize 
+\begin_inset Formula $\sum_{k}(y_{n}-\sum_{k}c_{k}\hat{\beta}_{OLS}X_{kn})^{2}$
+\end_inset
+
+ under the constraints 
+\begin_inset Formula $c_{k}\geq0$
+\end_inset
+
+, 
+\begin_inset Formula $\sum_{k}c_{k}\leq s$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+Then 
+\begin_inset Formula $\hat{\beta}_{NNG}=c_{k}\hat{\beta}_{OLS}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+As the Garrote is drawn tighter by decreasing s, more of the 
+\begin_inset Formula $\{c_{k}\}$
+\end_inset
+
+becomes zero and the remaining 
+\begin_inset Formula $\hat{\beta}_{NNG}$
+\end_inset
+
+is shrunken.
+\end_layout
+
+\begin_layout Standard
+By this way, the Garrote eliminates some variables which do not have large
+ effect on dependent variable.
+ To be intuitive, let us compare the form of the nn-garrote coffients 
+\begin_inset Formula $\hat{\beta}_{NNG}=(1-\frac{\lambda^{2}}{\hat{\beta}_{OLS}^{2}})^{+}\hat{\beta}_{OLS}$
+\end_inset
+
+ and ridge coefficients 
+\begin_inset Formula $\hat{\beta}_{R}=\frac{1}{1+\lambda}\hat{\beta}_{OLS}$
+\end_inset
+
+.
+ It is obvious that the Ridge would keep all the predictors because the
+ shrinkage factor
+\begin_inset Formula $\frac{1}{1+\lambda}>0$
+\end_inset
+
+.
+ But for the case of the Non-negative Garrote, the shrinkage factor could
+ be zero if 
+\begin_inset Formula $|\lambda|>\hat{|\beta}_{OLS}|$
+\end_inset
+
+.
+ It performs as the same as we elimates this predictor in our regression.
+\end_layout
+
+\begin_layout Standard
+Why we should have the chance to have the shrinkage factor be zero? There
+ is a example.
+ John von Neumann famously said
+\end_layout
+
+\begin_layout Quotation
+With four parameters I can fit an elephant, and with five I can make him
+ wiggle his trunk.
+\end_layout
+
+\begin_layout Standard
+By this he meant that one should not be impressed when a complex model fits
+ a data set well.
+ With enough parameters, you can fit any data set.
+\end_layout
+
+\begin_layout Standard
+(In fact, someone truly draw this funny curve using 4-5 parameters...
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-12"
+literal "false"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+That's why we need to select a subset of predictors.
+ A mathmetical prove of the importance in reducing the number of predictors
+ is provided on our lecture.
+ For each additional predictor adds the same amount of variance 
+\begin_inset Formula $\frac{\sigma^{2}}{N}$
+\end_inset
+
+, regardless of whether its true coefficient is large or small.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-8"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+However, comparing the subset selection to the Non-negative Garrote, subset
+ selection is discrete process, it is like making the shrinkage factor be
+ 0 or 1.
+ For the predictor you do not decide to drop, you leave it as before, but
+ the Non-negative Garrote drop some and shrinken the others.
+ It retains some predictors which have lower effect but shrink it smaller
+ to reduce the variance of your model.
+ It is a continuous process and hence is more stable.
+\end_layout
+
+\begin_layout Subsection
+the Lasso
+\end_layout
+
+\begin_layout Standard
+Motivated by the idea of the Nonnegative Garrote, the new method Lasso came
+ in 1995.
+\end_layout
+
+\begin_layout Standard
+Revise with the two problems we talked at the beginning of this blog, the
+ Ridge eases the problem 2, overfit with the existence of multicollinearity.
+ Though the Nonnegative Garrote avoids some drawbacks of the Ridge, its
+ solution depends on the sign and the magnitude of OLS estimates.
+ In overfit or highly correlated setting where the OLS estimates behave
+ poorly, the garotte may also suffer.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This problem is obvious in the graph in the paper(Tibshirani, 1995) shows
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename lasso1.jpeg
+	scale 15
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+the garotte have the combination of advantages of subset regression and
+ ridge regression.
+ However, as the bata increase, the shinkage factor become bigger.
+ But this problem does not exist in Lasso as the shrinkage effect is stable.
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+For all above, it sounds like the Lasso regression has lots of benefit comparing
+ to the former methods.
+ But we could not apply Lasso to all the situations.
+ Remember the initial idea of regularization is to handle the problem with
+ high demensions and overfit.
+ More precisely, Lasso could be considered with an normal linear model with
+ Laplace prior
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-14"
+literal "false"
+
+\end_inset
+
+, it means we have the prior knowledge that our model has too many predictors
+ and tends to be overfitted.
+\end_layout
+
+\begin_layout Standard
+For example, in the paper, the author make a comparison between these methods
+ in their relative merits.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+small number of large effects—-subset selection does best
+\end_layout
+
+\begin_layout Enumerate
+small to moderate number of moderate-size effects—the lasso does best
+\end_layout
+
+\begin_layout Enumerate
+large number of small effects—-the ridge regression does best
+\end_layout
+
+\begin_layout Standard
+In conclusion, we should carefully determin that if we should do the regularizat
+ion and choose the appropriate regularizers based on our prior belief.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Tibshirani, Robert.
+ “Regression Shrinkage and Selection via the Lasso.”[J].
+ Journal of the Royal Statistical Society.
+ Series B (Methodological), vol.
+ 58, no.
+ 1, 1996, pp.
+ 267–288.
+ JSTOR, www.jstor.org/stable/2346178.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-15"
+
+\end_inset
+
+Hoerl, Arthur E., and Robert W.
+ Kennard.
+ “Ridge Regression: Biased Estimation for Nonorthogonal Problems.” Technometrics,
+ vol.
+ 12, no.
+ 1, 1970, pp.
+ 55–67.
+ JSTOR, www.jstor.org/stable/1267351.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-6"
+
+\end_inset
+
+Michael A.
+ Nielsen.
+ “Neural Networks and Deep Learning”[M].
+ Determination Press.
+ 2015
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-8"
+
+\end_inset
+
+Jiaming Mao.
+ "Model_Selection_and_Regularization"[Z].2019-04-21.personal copy
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+
+\end_inset
+
+Breiman, Leo.
+ “Better Subset Regression Using the Nonnegative Garrote.”[J].
+ Technometrics, vol.
+ 37, no.
+ 4, 1995, pp.
+ 373–384.
+ JSTOR, www.jstor.org/stable/1269730.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-12"
+
+\end_inset
+
+J Mayer, K Khairy, J Howard.
+ “Drawing an elephant with four complex parameters”[J].
+ American Journal of Physics 78, 648 (2010); https://doi.org/10.1119/1.3254017
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-14"
+
+\end_inset
+
+Jeffrey B.
+ Arnold, “A Set of Bayesian Notes”[Z].https://jrnold.github.io/bayesian_notes/
+\end_layout
+
+\begin_layout Section*
+Weekly Recommended Reading by myself
+\end_layout
+
+\begin_layout Standard
+JOURNAL ARTICLE
+\end_layout
+
+\begin_layout Standard
+The effect of welfare payments on work: Regression discontinuity evidence
+ from Ecuador
+\end_layout
+
+\begin_layout Standard
+Mariano Bosch and Norbert Schady
+\end_layout
+
+\begin_layout Standard
+Journal of Development Economics, Volume 139, 2019, Pages 17-27, ISSN 0304-3878
+\end_layout
+
+\begin_layout Standard
+DOI: 10.1016/j.jdeveco.2019.01.008.
+\end_layout
+
+\begin_layout Standard
+Recently, I am learning several method evaluating the treatment effect.
+ Here is a example using the fuzzy Regression discontinuity method.
+ Different form the traditional sharp RD method, not all the sample in treatment
+ group are being treated.
+ In this case, it means that not all the eligible households receive payments.
+ Therefore, they did a two stage regression, using the eligibility and other
+ control variable to predict the true payment.
+ And then regress the payment to the workchoice of womens.
+\end_layout
+
+\begin_layout Section*
+link
+\end_layout
+
+\begin_layout Enumerate
+This article has been published on my own blog.
+ Click to visit.
+ https://nanjinzeng.github.io/
+\end_layout
+
+\begin_layout Enumerate
+If you want to know more about how they can Drawing an elephant with four
+ complex parameters, click to visit.
+ https://aapt.scitation.org/doi/10.1119/1.3254017 
+\end_layout
+
+\end_body
+\end_document
