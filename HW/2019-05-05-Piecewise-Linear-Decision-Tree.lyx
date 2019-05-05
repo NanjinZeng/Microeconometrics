@@ -1,0 +1,540 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Piecewise Linear Decision Tree with M5' Algorithm
+\end_layout
+
+\begin_layout Author
+Nanjin Zeng(id:15220162202482) WISE IUEC 2016
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+In the challenge "trees", we are required to find a method to construct
+ a piecewise linear decision tree.
+ It means that we should find a tree-based model, but imposing a linear
+ relationship instead of values on the leaf.
+ In this blog, I want to introduce a method called M5' Algorithm, which
+ is a common method for buliding Piecewise Linear Decision Tree, or Model
+ Tree.
+ In section 2, I would give a brief explaination for its mechanism and developme
+nt path.
+ In section 3, I would demonstrate this method using the demo example in
+ lecture, data boston housing price, with a compare with other methods introduce
+d in class.
+\end_layout
+
+\begin_layout Section
+Model Tree
+\end_layout
+
+\begin_layout Standard
+After looking up the journal data base, I find that many algorithms were
+ raised in 1990s might help us to construct this kind of models, like MARS
+ using recursive patitioning to choose the knots
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+literal "false"
+
+\end_inset
+
+ (Friedman, 1991/Actually, it is not a tree base model.), SUPPORT (
+\begin_inset Quotes eld
+\end_inset
+
+Smoothed and Unsmoothed Piecewise-Polynomial Regression Trees
+\begin_inset Quotes erd
+\end_inset
+
+, Chaudhuri et al, 1994) selecting its splits by analysis of the distributions
+ of the residuals
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-3"
+literal "false"
+
+\end_inset
+
+.
+ But I want to introduce a most popular one, M5 model tree.
+ It is widely used even in other science filed, such as precticting wave
+ height (A Etemad-Shahidi et al, 2009) and river flow forecasting (MT Sattari
+ et al, 2013).
+\end_layout
+
+\begin_layout Subsection
+M5 Algorithm (Quinlan, 1992)
+\end_layout
+
+\begin_layout Standard
+After the invention of CART system for decision trees(Breiman et al, 1984),
+ people were curious about if they could extend this techniques to deal
+ with numerically-valued attributes by choosing a threshold at each node
+ of the tree and testing the value against threshold.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+literal "false"
+
+\end_inset
+
+ But they do not think about the situations that where the class value is
+ numeric.
+ In 1992, an algorithm called M5 was raised by Quinlan, which is a resemble
+ method combining the linear regression function and decision trees.
+\end_layout
+
+\begin_layout Standard
+The procedures buliding a model tree is similar to build a decision tree
+ using CART
+\end_layout
+
+\begin_layout Enumerate
+In the first stage, a decision tree induction algorithm is used to bulid
+ a tree.
+ The splitting criterion is based on the standard deviation of the class
+ value.
+ Slighly different to the CART, it does not choose the one gives the greatest
+ expected reduction in variance.
+ It tests it splits by maximizing the standard deviation reduction (SDR),
+ calculated by
+\begin_inset Formula 
+\[
+SDR=sd(T)-\sum_{i}\frac{\left[T_{i}\right]}{\left[T\right]}*sd\left(T_{i}\right)
+\]
+
+\end_inset
+
+where T is the set of examples that reach the node and 
+\begin_inset Formula $T_{i}$
+\end_inset
+
+is the set that result from splitting the node accordiung to the chosen
+ attribute.
+\end_layout
+
+\begin_layout Enumerate
+After buliding the initial tree, the second stage is to prune the tree.
+ First, the absolute error is averaged for each of the training examples
+ that reach that node.
+ To compensate the underestimate of the 
+\begin_inset Formula $E_{out}$
+\end_inset
+
+, it is multiplied by the factor 
+\begin_inset Formula $\frac{n+v}{n-v},$
+\end_inset
+
+where n is the number of training example that reach the node and v is the
+ number of training examples that reach the node and v is the number of
+ parameters in the model.
+ To notice, the model is calculated using only the attributes that are tested
+ in the subtree below this node.
+ That could be a fair compare with subtree.
+ Once a linear model constructed in this way is in place for a interior
+ node, the tree is pruned back from the leaves.
+\end_layout
+
+\begin_layout Enumerate
+The final stage is a smoothing process.
+ It is a complex process so I want to skip it.
+ But the basic idea is that, this process decrease the discountinuitics
+ between adjacent linear models at the leaves, which is believed to increase
+ the accuracy of preductions.
+\end_layout
+
+\begin_layout Standard
+The author claims and illustrates it with data that this M5 model tree have
+ advantages over regression trees in both compactness and predition accuracy,
+ attributable to the abiliy of model trees to exploit local linearity in
+ data.
+\end_layout
+
+\begin_layout Subsection
+M5' Algorithm (Wang & Witten, 1997)
+\end_layout
+
+\begin_layout Standard
+As a resemble method combining linear regression and decision trees, the
+ M5 model tree give high prediction accuracy with the small price on interpretat
+ion.
+ But for the prototype in 1992, it still has some ambigious point.
+\end_layout
+
+\begin_layout Enumerate
+It do not allow a split that create a leaf with fewer than two training
+ examples.
+ 
+\begin_inset Formula $(n=v=1)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+M5 do not split a node if it represents very few examples or their values
+ vary only slightly.
+ The author shows that the result are not very sensitive to the choice of
+ threshold.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+At the pruning process, attributes are dropped from a model when their effect
+ is somall.
+ But this criterion is too strict, sometimes these attributes may participate
+ in higher level model.
+\end_layout
+
+\begin_layout Enumerate
+M5 do not give a clear notice how to deal with missing attribute values.
+\end_layout
+
+\begin_layout Standard
+In order to ease these draw back, they give a improved algorithm called
+ M5'.
+ Being brief, I focus on the main improvement of this model.
+ It modified the SDR to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+SDR=\frac{M}{\left[T\right]}*\beta\left(i\right)*\left[sd(T)-\sum_{j\in\left\{ I,R\right\} }\frac{\left[T_{j}\right]}{\left[T\right]}*sd\left(T_{j}\right)\right]
+\]
+
+\end_inset
+
+m is the number of examples without missing values for that attribute.
+ 
+\begin_inset Formula $\beta\left(i\right)$
+\end_inset
+
+ is the correction factor which is unity for a binary split and decays exponenti
+ally as the number of values increases.
+ The author states, they first deal with all examples for which the value
+ of the spliting attribute is known.
+ If it is continous, they determine a numeric threshold for splitting in
+ the usual way.
+ For each split point, they calculate the SDR according to this formular.[]
+\end_layout
+
+\begin_layout Standard
+To conclude, this system deals effectively with both enumcrated attributes
+ and missing attribute values.
+ It has the advantage that the models it generates are compact and relatively
+ comprehensible.
+\end_layout
+
+\begin_layout Section
+Method demonstration — Boston Housing Price
+\end_layout
+
+\begin_layout Standard
+In application, we could use a R pack called "Rweka" to realize M5' Algorithm.
+ Noticed that it is based on Java, you should have a Java SE environment
+ and R pack "rJava" on your mechine.
+\end_layout
+
+\begin_layout Standard
+The basic syntax is that
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-5"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Quote
+M5P(formula, data, subset, na.action, control=weka_control(), options=NULL)
+\end_layout
+
+\begin_layout Standard
+In this case, precluded by the length of this blog, I do not want to introduce
+ advanced option of this function based on Weka algorithm.
+\end_layout
+
+\begin_layout Standard
+First, we create trainning and test sets.
+\end_layout
+
+\begin_layout Quote
+require(MASS)
+\end_layout
+
+\begin_layout Quote
+set.seed(1234) #set random seed in order to repeat the result
+\end_layout
+
+\begin_layout Quote
+train = sample(nrow(Boston), nrow(Boston)*0.6)
+\end_layout
+
+\begin_layout Quote
+data_train = Boston[train,]
+\end_layout
+
+\begin_layout Quote
+data_test = Boston[-train,]
+\end_layout
+
+\begin_layout Standard
+For the main part,
+\end_layout
+
+\begin_layout Quote
+require(RWeka)
+\end_layout
+
+\begin_layout Quote
+m.m5p <- M5P(medv~.,data=data_train) #train the classifier using training
+ data
+\end_layout
+
+\begin_layout Quote
+yhat <- predict(m.m5p,data_test) #test the classifier using L2 loss
+\end_layout
+
+\begin_layout Quote
+mean((yhat-ytrue)^2)
+\end_layout
+
+\begin_layout Standard
+Here is the error on the test data, comparing to other algorithm we have
+ learnt in class.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename M5P.jpg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The random forest is still the best.
+ As a resemble method, M5P beats pruned decision tree and linear model in
+ prediction accuracy, in a price of being less interpretable.
+ The test result is consistant as we expected.
+\end_layout
+
+\begin_layout Section
+Some notice using M5' Algorithm
+\end_layout
+
+\begin_layout Standard
+From the discussion and example above, we can clearly know some features
+ of M5' algorithm.
+\end_layout
+
+\begin_layout Enumerate
+As a resemble method, M5' Algortithm fits linear regression model instead
+ a constant in leaves.
+ It enhances the prediction accuracy, in a price of being less interpretable.
+ We should make a trade-off if we are doing a research, since we sometimes
+ need to reveal the pattern underlying the sample to make some intrepretations,
+ more than making good predictions on data.
+ We could not apply it blindly because it seems more accurate.
+\end_layout
+
+\begin_layout Enumerate
+For other simulation data in lecture, their class value is binary.
+ In this case, we could not use M5P algorithm.
+ Obviously, in this case, fitting a linear relationship on the leaves do
+ not make sense.
+ In applications, researchers using this algorithm mainly in something may
+ have a numerical outcome, like water level and the melt tempreture on alloy.
+ Actually, the M5P algorithm do not run if it detects that you outcome is
+ binary.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+Friedman, Jerome H.
+ "Multivariate Adaptive Regression Splines."[J], The Annals of Statistics
+ 19, no.
+ 1 (1991): 1-67.
+ http://www.jstor.org/stable/2241837.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+literal "false"
+
+\end_inset
+
+Chaudhuri, Probal, Min-Ching Huang, Wei-Yin Loh, and Ruji Yao.
+ "PIECEWISE-POLYNOMIAL REGRESSION TREES."[J], Statistica Sinica 4, no.
+ 1 (1994): 143-67.
+ http://www.jstor.org/stable/24305278.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+Wang, Y.
+ & Witten, I.
+ H.
+ (1996).
+ Induction of model trees for predicting continuous classes.
+ (Working paper 96/23)[R].
+ Hamilton, New Zealand: University of Waikato, Department of Computer Science.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-5"
+
+\end_inset
+
+K.
+ Hornik, C.
+ Buchta, and A.
+ Zeileis.
+ Open-source machine learning: R meets Weka.[J] Computational Statistics,
+ 24(2):225{232, 2009.
+ doi: 10.1007/s00180-008-0119-7.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-7"
+
+\end_inset
+
+JR Quinlan.
+ Learning with continuous classes[A].
+ Anthony Adams and Leon Sterling.
+ AI '92[C].
+ Proceedings of the 5th Australian Joint Conference on Artificial Intelligence.
+ (1992).
+ doi:10.1142/9789814536271
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-8"
+
+\end_inset
+
+Jiaming Mao.
+ "Decision_Trees_and_Ensemble_Methods"[Z].2019-05-05.personal copy
+\end_layout
+
+\begin_layout Section*
+link
+\end_layout
+
+\begin_layout Standard
+This article has been published on my own blog.
+ Click to visit.
+ https://nanjinzeng.github.io/
+\end_layout
+
+\end_body
+\end_document
